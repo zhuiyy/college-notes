@@ -1,0 +1,1 @@
+### 在终端中使用 python name.py < input.txt 即可重定向
