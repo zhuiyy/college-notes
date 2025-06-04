@@ -1,0 +1,1721 @@
+整数:程序中可以写无限大的,计算机有方法将其变成可处理的数
+
+十进制:无前缀
+二进制:0b 0B
+八进制:0o 0O
+十六进制:0x 0X
+
+浮点数:表示范围,精度都有限
+
+'3.0'
+'0.3'
+'3.24e-3'(以十为底)
+
+复数:
+3.0 + 7j
+转化:
+complex(1,5) = 1 + 5j
+complex(8) = 8
+
+type(0.467)可输出对象的类型
+
++ - * / // % **
+
+>>>print('%.6f'%(1/17)) #f代表float,.6代表保留小数点后6位
+0.058824
+
+>>>print('%f'%0.5) #默认保留6位
+0.500000
+
+%d 表示输出整数
+
+>>>print('%10d'%456)
+       456 #输出长为10的结果
+
+print('%d%f'%(a,b)) = print('%d'%a,'%f'%b)
+
+round()不要用,会有不合逻辑的输出
+
+decimal内有更精确的舍入函数
+
+pow(a,b,c):=pow(a,b)%c
+pow(a,b):=a的b次方
+
+dir(math(模块名)):=查看math
+help(math(模块名)):=查看有关math的帮助
+
+math.pi:=Π
+
+'ab'+'12' = 'ab12'
+'ab'*3 = 3*'ab' = 'ababab'
+
+s[m:n]:=取s[m~n-1]构成字符串,m>=n时回复空('')
+s[m:n:d]:=以d为步长取(d可为负,只需mn大小颠倒)
+
+>>>print('\'')
+'
+
+
+>>>print(r'\'')
+\'
+
+#(')
+
+秦九韶算法(多项式计算):尽可能减少乘法:
+a*x^2+b*x+c = ((a)*x+b)*x+c
+
+~:非
+    ~1 = 0
+    ~0 = 1
+|:或
+    有1就得1
+&:与
+    全为1才得1
+^:异或
+    相同得0,否则为1
+    其实相当于是按位进行二进制mod2加法(1^0 = 1,1^1 = 0^0 = 0,0^1 = 1)
+整数可以进行如上按位运算
+以及 x<<n:左移n位数(低位补零,相当于*2**n)
+    右移类似(低位去除)
+例子:
+>>>0b10001 & 0b11010
+16
+注意:
+>>>bin(16)
+'0b10000'
+
+
+ASCII:
+    ord('A') = 65 = (01000001)2
+    ord('Z') = 90
+    ord('a') = 97
+    ord('z') = 122
+    ord('0') = 48
+    ord('9') = 57
+    ord(' ') = 32
+    chr(65) = 'A'
+
+8bit(比特)=1byte(字节)=1B
+1KB = 2^10B
+1MB = 2^20B
+1GB = 2^30B
+1TB = 2^40B
+
+>>>int('23',5)
+13
+>>>int('9AF',16)
+2479
+
+>>>bin(174)
+'0b10101110'
+(二进制:0b)
+>>>oct(485)
+'0o745'
+(八进制:0o)
+>>>hex(2479)
+'0x9AF'
+(十六进制:0x)
+
+应用时:
+>>>int(bin(174)[2::])
+10101110
+
+原码、反码、补码和移码
+均用8位二进制数表示整数
+第一位为符号判别位:0代表正数,1代表负数
+
+原码:
+x \in [0,2**7-1] : [x]_{原} = 0(符号位) + (x)_{2}(二进制表示)
+x \in [-2**7+1,0] : [x]_{原} = 1 + (|x|)_{2}
+注:
+    [0]_{原} = 00000000 = 10000000
+    可表示范围:[-2**7+1,2**7-1]
+    符合首位判断正负的原则(0除外)
+
+反码:
+x \in [0,2**7-1] : [x]_{反} = [x]_{原}
+x \in [-2**7+1,0] : [x]_{反} = [2**8-1+x]_{原}(即对[|x|]_{原}按位求反)
+注:
+    [0]_{反} = 00000000 = 11111111
+    可表示范围:[-2**7+1,2**7-1]
+    仍然符合首位判断正负的原则(0除外)
+
+补码:
+x \in [0,2**7-1] : [x]_{补} = [x]_{原}
+x \in [-2**7,-1] : [x]_{补} = [2**8+x]_{原}(即对[|x|]_{原}按位求反后加一)
+注:
+    [0]_{补} = 00000000
+    [-1]_{补} = 11111111
+    [-2**7]_{补} = 10000000
+    可表示范围:[-2**7,2**7-1]
+    仍然符合首位判断正负的原则
+
+移码_127:
+x \in [-2**7+1,2**7] : [x]_{移_127} = [(x+127)的二进制表示] (= [x+127]_{原})
+注:
+    127的二进制表示:01111111
+
+八位二进制编码转换：
+    移码_127:
+        x的移码_127是(x+127)的二进制表示
+    正数情况:
+        2**7:
+            只有移码_127:11111111
+        [1,2**7-1]:
+            原码、反码、补码其实都是x的二进制表示
+    0:
+        原码:00000000或10000000
+        反码:00000000或11111111
+        补码:00000000
+        移码_127:01111111
+    负数情况:
+        [-2**7+1,-1]:
+            原码:首位为1,后7位是|x|的二进制表示
+            原码到反码/反码到原码:除符号位以外按位取反
+            原码到补码:除符号位以外按位取反再+1
+            补码到原码:-1再除符号位以外按位取反
+        -2**7:
+            只有补码10000000
+
+八位二进制编码加减法:
+    原码:通过首位判断±后直接进行二进制加减法,再还原为原码
+    反码:改为原码后计算
+    补码:
+        a+b直接把补码相加,溢出的位数不要了.
+        a-b变为a+(-b),同上
+
+广义逻辑运算:and or
+
+广义0: int(0),float(0),'',[],{}......
+短路运算法则:
+    a and b    若a为广义0,则输出a,否则输出b
+    a or b     若a为广义0,则输出b,否则输出a
+
+
+条件表达式:
+a if b else c
+若b为真,输出a,反之输出c
+
+检查数据类型:
+1.type(a) == 类型名
+2.isinstance(a,类型名)
+print(k if isinstance(k, int) else f'{k:.2f}')
+
+断言语句:
+assert 条件:若条件成立,则继续运行,否则报错
+assert 条件,表达式:若条件成立,计算表达式,否则报错,且传递表达式信息
+
+函数文档串:
+f.__doc__
+
+try-except结构:
+例:
+    s = input()
+    try:
+        a = float(s)
+        print('True')
+    except Exception as e:
+        print('False')
+可用于检验s作为字符串能否转化为float形式
+注:
+    try环境中进行的操作允许报错,报错后停止执行,转到except环境
+    如果报错符合except后的内容(Exception是万能报错)则执行except环境代码
+    e作为一个字符串以except后为内容
+
+print默认参数:
+print(*objects,sep='',end='\n',file=sys.stdout,flush=False)
+    sep:分隔
+    end:结束符
+    file:输出位置
+
+注意可以活用条件表达式:
+    for i in range(1,100):
+        print(i,end = '\n' if i%10 == 0 else ' ')
+
+
+模块化:
+python程序运行时,总有一个全局变量__name__
+运行的每一个时刻,__name__总是一个字符串
+导入方式执行一个模块(py文件),则__name__ == 文件名
+当py作为主模块启动时,__name__ == '__main__'
+
+例:
+    if __name__ == '__main__':
+        #此处的代码仅在本文件为主程序运行时执行,此代码被导入到其他程序中则不执行
+
+字符串进阶处理方法:
+    1.字符串下标操作得到单子字符串
+    2.in/not in 判断字符串是否是另一字符串的子串
+    3.max(s),min(s)为s中编码最大/小的单个字符
+    4.s.index(t) t在s中首次出现的位置,若不出现则报错
+    5.s.count(t) 统计t在s中出现多少次(不重叠)
+    6.== , != 略
+    7.基于字典序(头对齐一位一位比),可以给出字符串的大小关系> / <
+        注: 'abc' < 'abcd'
+    8.在字符串中循环:
+        for i in s:
+            ......
+    9.其他更高阶的操作(见file:///D:/%E5%AD%A6%E4%B9%A0/%E5%A4%A7%E5%AD%A6/%E5%A4%A7%E4%B8%80%E4%B8%8A/%E8%AE%A1%E6%A6%82/Python-2-%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%8F%8A%E5%85%B6%E6%A0%BC%E5%BC%8F%E5%8C%96%E7%94%9F%E6%88%90.pdf)
+    10.sep.join(list)
+        >>>','.join(['a','b','c'])
+        'abc'
+    (11.repr函数)
+    12.形式化:
+        s.center(n)
+        s.ljust(n)
+        s.rjust(n)
+        s.rjust(6,'0')
+    13.
+        .upper全改大写
+        .lower类似
+        .center(a)
+            a是int,为总长度,center用于居中
+
+局部变量问题:
+
+x = 1
+def f():
+    y = x
+    x = 1
+    print(y)
+f()
+报错,找不到局部变量x
+
+x = 1
+def f():
+    y = x
+    print(y)
+f()
+正常输出1
+
+注意:函数会先检查所有赋值语句,形成局部变量环境后再执行代码
+
+
+id 函数,对任何对象都有定义,返回对象的标识:
+    >>>id(True)
+    1603334368
+    >>>id(print)
+    1343352
+
+全局变量声明语句:
+global a  ......(写在局部作用域中)
+例子:
+    n = int(input())
+    Time = 0
+    def F (t):
+        global Time
+        Time += 1
+        if t <= 1:
+            return 1
+        a = F(t//2)
+        b = F(t//2-1)
+        if t%2 == 0:
+            return a**2+b**2
+        return a**2+2*a*b
+    print(F(n))
+    print(Time)
+
+
+非局部变量:
+nonlocal a
+
+
+filter用法:根据某一个函数是否为真,创建一个迭代器(再把它转化为一个list来输出)
+numbers = [1, 2, 3, 4, 5, 6]
+evens = filter(lambda x: x % 2 == 0, numbers)
+print(list(evens))  # 输出: [2, 4, 6]
+
+其中lambda x: x % 2 == 0是一个局部函数,没有名字,如果已经定义了一个单变量函数f,其实也可以调用,也可以写为:
+evens = filter(f, numbers)
+
+
+注意:
+一旦迭代器耗尽,你不能再次访问其中的元素.比如:
+evens = filter(lambda x: x % 2 == 0, range(1, 6))
+# 第一次遍历
+print(list(evens))  # 输出: [2, 4]
+# 再次尝试遍历
+print(list(evens))  # 输出: [],因为迭代器已经耗尽
+
+
+不用filter也可以创建迭代器:
+numbers = [1, 2, 3]
+iterator = iter(numbers)
+#iter()函数将列表转化为迭代器
+
+可以用next()访问
+print(next(iterator))  # 输出: 1
+print(next(iterator))  # 输出: 2
+
+迭代器耗尽后再用next()会报错
+但for循环自动用next()时就可以自动停止,不会报错:
+for num in iter([1, 2, 3]):
+    print(num)  # 依次输出: 1, 2, 3
+
+
+map函数,与filter类似但不是用于过滤,而是将多个自变量的函数值存在一个表里
+numbers = [1, 2, 3, 4, 5]
+squared = map(lambda x: x ** 2, numbers)
+print(list(squared))  # 输出: [1, 4, 9, 16, 25]
+
+s = ["1", "2", "3", "4", "5"]
+# 将字符串转换为整数
+nums = list(map(int, s))
+print(nums)  # 输出: [1, 2, 3, 4, 5]
+
+
+如果你提供多个可迭代对象,map 会并行地对它们的元素应用函数,直到最短的可迭代对象耗尽:
+list1 = [1, 2, 3]
+list2 = [4, 5, 6, 7]
+
+result = map(lambda x, y: x + y, list1, list2)
+print(list(result))  # 输出: [5, 7, 9]
+
+match - case用法:
+
+def match_example(value):
+    match value:
+        case 1:
+            return "One"
+        case 2:
+            return "Two"
+        case 3:
+            return "Three"
+        case _:
+            return "Invalid value"
+
+print(match_example(1))  # 输出: One
+print(match_example(5))  # 输出: Invalid value
+
+
+copy是浅拷贝,可能发生元素共享,可以考虑使用deepcopy创建完全独立的复制(需要import copy):
+    import copy
+    a = copy.deepcopy([1,2,2])
+
+
+函数默认值:
+def add(a,start = []):
+    start.append(a)
+    return start
+则print(add(1))
+#输出[1]
+print(add(1,[0,9]))
+#输出[0,9,1]
+print(add(2))
+#输出[1,2](默认值改了)
+
+
+一个地址是1Byte
+
+
+# 假设学生信息存储在一个字典中,每个字典包含姓名、年龄和成绩
+students = [
+    {"name": "张三", "age": 20, "score": 85},
+    {"name": "李四", "age": 22, "score": 90},
+    {"name": "王五", "age": 19, "score": 88},
+    {"name": "赵六", "age": 21, "score": 92},
+    {"name": "孙七", "age": 23, "score": 76},
+    # 假设有 N 个学生
+]
+
+# 排序:先按照成绩降序排序,再按照年龄升序排序
+students_sorted = sorted(students, key=lambda x: (-x["score"], x["age"]))
+
+用元组作为key很好使,先比较第一分量,再比较第二分量
+
+
+正则表达式:
+构成:
+正则表达式由字符、特殊符号、元字符等组成.下面是一些常见的正则表达式元素.
+
+普通字符
+字母和数字本身:a, b, 1, A 等表示匹配相应的字符.
+
+
+元字符(Metacharacters)
+元字符是正则表达式中的特殊字符,具有特殊的功能,如果你需要匹配这些特殊字符本身,可以通过 转义字符(\)来实现
+
+\d :匹配任何数字,等价于 [0-9].
+\D :匹配任何非数字字符,等价于 [^0-9].
+\w :匹配任何字母数字字符(包括下划线),等价于 [a-zA-Z0-9_].
+\W :匹配任何非字母数字字符,等价于 [^a-zA-Z0-9_].
+\s :匹配任何空白字符,包括空格、制表符、换行符等.
+\S :匹配任何非空白字符.
+\b :匹配单词边界(即单词和非单词字符之间的位置).
+\B :匹配非单词边界的位置.
+
+. :匹配任意单个字符(除了换行符 \n).
+^ :匹配字符串的开头.
+$ :匹配字符串的结尾.
+* :匹配前面的子表达式零次或多次(例如,a* 匹配 "a", "aa", "").
++ :匹配前面的子表达式一次或多次(例如,a+ 匹配 "a", "aa", "aaa").
+? :匹配前面的子表达式零次或一次(例如,a? 匹配 "" 或 "a").
+{n}:表示前面表达式出现 n 次.
+{n,}:表示前面表达式出现至少 n 次.
+{n,m}:表示前面表达式出现 n 到 m 次.
+[] :匹配方括号内的任意一个字符(例如,[aeiou] 匹配任何一个元音字母).
+| :表示'或'操作,匹配左边或右边的表达式(例如,a|b 匹配 "a" 或 "b").
+() :分组,用于把多个字符组合成一个单位(例如,(abc)+ 匹配 "abc", "abcabc" 等).
+
+
+'''注意re包是如何处理字符串的,如果re包调用一个字符串作为正则表达式,他会
+!!!不让python自行理解字符串的含义,如'\n'是换行,'\d'和r'\d','\\d'都代表'\d'这些过程都取消!!
+!!!re模块有自己的一套方法,包含,\d,\n等等,他需要字面义的'\n',所以一般会在前面加上r,他从字面义的一个字符串中,再按照自己的语法理解'''
+
+
+'''为了确保 re 模块能正确解析,它必须接收到原始的反斜杠形式,
+而不是被 Python 编译阶段修改过的字符串.换句话说,re 模块完全依赖字面意义上的字符来完成解析.'''
+
+
+
+r'...':原始字符串,用来表示正则表达式等内容,其中反斜杠 \ 会被直接当作字面字符处理,不需要额外转义.
+'...':普通字符串,反斜杠需要被转义,例如 \\
+因此,pattern = r'\d+' 这种写法是为了避免你在编写正则表达式时需要不断地进行转义.r 前缀告诉 Python 这是一个原始字符串,反斜杠将不会被转义.
+
+如果没有 r,正则表达式 \d 就会被解释成普通字符串中的 \ 和 d,而不是正则表达式中的 "匹配数字".所以,r'\d+' 作为正则表达式模式,会更直观、简洁.
+
+
+
+re包:
+re 是 Python 中的一个标准库,提供了用于正则表达式操作的功能(Regular Expression),一个用于匹配字符串模式的强大工具
+
+re.match(),匹配字符串!!开头内容!!,有则输出匹配字符,否则返回None
+    import re
+    pattern = r'hello'
+    text = 'hello world'
+    result = re.match(pattern, text)
+    if result:
+        print('Match found:', result.group())
+    else:
+        print('No match')
+
+    #输出 Match found: hello
+
+若相匹配任意位置,可以使用
+re.search(),扫描整个字符串,返回第一个匹配的结果.如果没有找到,返回 None
+
+re.findall(), 返回所有非重复的匹配结果,以列表形式返回
+    pattern = r'\d+'  # 匹配所有数字
+    text = 'There are 3 apples and 15 oranges.'
+    results = re.findall(pattern, text)
+    print(results)  # 输出: ['3', '15']
+
+
+re.sub() 用一个替换字符串替换所有匹配的部分
+    pattern = r'apples'
+    text = 'There are 3 apples and 15 oranges.'
+    new_text = re.sub(pattern, 'bananas', text)
+    print(new_text)  # 输出: There are 3 bananas and 15 oranges.
+
+re.split() 按照正则表达式的匹配结果对字符串进行分割
+    pattern = r'\s+'  # 匹配一个或多个空格
+    text = 'This is a test'
+    result = re.split(pattern, text)
+    print(result)  # 输出: ['This', 'is', 'a', 'test']
+
+
+分组
+用圆括号 () 将表达式分组,这样可以将匹配到的部分提取出来
+    pattern = r'(\d{3})-(\d{2})-(\d{4})'  # 匹配社会保障号码(SSN)
+    text = '123-45-6789'
+    result = re.search(pattern, text)
+    if result:
+        print('Area:', result.group(1))  # 输出: Area: 123
+        print('Group:', result.group(2))  # 输出: Group: 45
+        print('Number:', result.group(3))  # 输出: Number: 6789
+
+
+sympy库:
+判断一个数是否为素数
+使用 isprime() 函数判断一个数是否为素数
+
+生成素数范围内的素数
+使用 primerange() 函数可以生成指定范围内的所有素数
+
+    from sympy import primerange
+
+    # 获取1到100之间的所有素数
+    primes = list(primerange(1, 100))
+    print(primes)
+
+
+factorint() 函数可以将一个数分解成其质因数
+
+
+reduce 函数:
+reduce(lambda x,y:x+y,[1,2,3,4,5]) == ((((1+2)+3)+4)+5)
+
+
+f-string:
+    name = "Zhuiy"
+    age = 19
+    print(f"My name is {name} and I am {age} years old.")
+    # 输出: My name is Zhuiy and I am 19 years old.
+
+    print(f"3 + 2 = {3 + 2}")
+    # 输出: 3 + 2 = 5
+
+    pi = 3.14159265358979
+    print(f"保留两位小数: {pi:.2f}")
+    # 输出: 保留两位小数: 3.14
+
+    其他的保留小数后几位方法:
+    1.
+        a = 2.345566
+        print('%.4f'% a)
+        # 2.3456
+    2.
+        a = 2.345566
+        print(format(a, '.4f'))
+        # 2.3456
+
+集合 set
+不变集合 frozenset
+    k = {1,7,6,9,10}
+    l = frozenset(i**2 for i in range(-20,20))   (自动消除重复元素)
+    set('abbcdf') == {'b','c','a','f','d'}
+    in与not in,len()都适用
+    for i in {1,4,5,3,7}也可用
+    sort也可用
+
+    在比较集合时,并不区分set, frozenset
+    集合之间可以用==,!=运算符判断相等和不等
+    当且仅当两个集合的元素完全相同时,用== 比较得到True,否则False(符合数学定义)
+    >>> {1, 2, 3} == frozenset((1, 2, 3))  # 结果为True
+    s<=s1或s.issubset(s1)当且仅当s为s1的子集时返回True
+    s<s1当且仅当在s为s1的真子集时得到True
+    >=,issupperset,>也是类似的
+    s.isdisjoint(s1)判断两个集合是否不相交,无公共元时输出True
+
+    运算:
+        |:并集
+        &:交集
+        -:差集
+        ^:对称差集
+
+    s.add(x)将元素x加入集合s
+    s.remove(x)从s里删除元素x,在s没有x时报错
+    s.discard(x)如果s里有x就丢弃它,没有x时什么也不做
+    s.pop()从s里删除某个(任意的)元素并返回它,如果操作时s为空则报错
+    s.clear()清除s里的所有元素
+
+生成器函数:generator function
+    需要出现yield语句
+    可暂停函数,一次yield后可以冻结当前情况,直到下一次调用该函数再继续
+
+    def fib(limit):
+        f0,f1 = 0,1
+        for n in range(limit):
+            yield f0
+            f0,f1 = f1,f0+f1
+    可以调用:
+    g = fib(50)
+    print(next(g))
+    print(next(g))
+    for i in g
+    ......
+
+
+key: 文件系统
+    好的，接下来我会给你讲解 Python 中关于文件的基本操作，包括文件的打开、读取、写入和关闭等操作。理解这些文件操作对你在处理数据、记录日志、配置文件等方面非常重要。
+
+### 1. **打开文件 (`open()`)**
+
+在 Python 中，文件操作的基础是 `open()` 函数。它用于打开一个文件，并返回一个文件对象，你可以通过这个文件对象进行进一步的操作。
+
+#### 语法：
+
+
+file = open(file_name, mode)
+
+
+- **`file_name`**：要打开的文件的路径，支持相对路径和绝对路径。
+- **`mode`**：文件打开模式，决定了你对文件的操作权限。常用的模式有：
+  - `'r'`：只读模式（默认）。文件必须存在，若文件不存在会抛出 `FileNotFoundError`。
+  - `'w'`：写入模式。如果文件存在，会覆盖文件内容；如果文件不存在，会创建文件。
+  - `'a'`：追加模式。若文件存在，数据会被追加到文件末尾；若文件不存在，会创建文件。
+  - `'b'`：二进制模式，适用于非文本文件（如图片、音频文件等）。可以与其他模式组合使用，如 `'rb'`（以二进制读模式打开）。
+  - `'x'`：独占创建模式。如果文件已经存在，则抛出 `FileExistsError`。
+
+#### 示例：打开文件
+
+
+# 只读模式打开文件
+file = open('example.txt', 'r')
+
+# 写入模式打开文件（如果不存在会创建）
+file = open('example.txt', 'w')
+
+
+### 2. **读取文件内容**
+
+文件对象提供了多种方法来读取文件内容。
+
+#### `read()`
+读取整个文件的内容，返回一个字符串。如果文件内容较大，可能会一次性读取完所有内容，容易导致内存消耗较大。
+
+
+# 读取整个文件内容
+file = open('example.txt', 'r')
+content = file.read()
+print(content)
+file.close()
+
+
+#### `readline()`
+读取文件中的一行，每次调用返回一行文本。通常用于逐行读取较大的文件。
+
+
+# 逐行读取文件
+file = open('example.txt', 'r')
+line = file.readline()  # 读取第一行
+print(line)
+file.close()
+
+
+#### `readlines()`
+读取文件中的所有行，并返回一个列表，每个元素是文件中的一行。
+
+
+# 读取文件的所有行
+file = open('example.txt', 'r')
+lines = file.readlines()
+print(lines)
+file.close()
+
+
+### 3. **写入文件**
+
+打开文件后，你可以使用 `write()` 或 `writelines()` 方法写入数据到文件。
+
+#### `write()`
+将指定的字符串写入文件。
+
+
+file = open('example.txt', 'w')  # 写入模式
+file.write('Hello, world!\n')  # 写入一行文本
+file.close()
+
+
+#### `writelines()`
+将一个可迭代对象（如列表）中的所有元素写入文件，每个元素将被写成一行（但不会自动添加换行符）。
+
+
+lines = ['Hello, world!\n', 'This is a test.\n']
+file = open('example.txt', 'w')
+file.writelines(lines)  # 写入多行
+file.close()
+
+
+### 4. **关闭文件 (`close()`)**
+
+在文件操作完成后，必须调用 `close()` 方法来关闭文件。关闭文件后，文件对象将无法再进行读写操作。虽然在使用 `with` 语句时文件会自动关闭，但如果不使用 `with`，你需要显式调用 `close()`。
+
+
+file = open('example.txt', 'r')
+content = file.read()
+file.close()  # 关闭文件
+
+
+### 5. **使用 `with` 管理文件**
+
+使用 `with` 语句可以自动管理文件的打开和关闭。`with` 会确保在代码块结束后文件被正确关闭，即使出现异常也能保证文件关闭。
+
+
+# 用 `with` 打开文件
+with open('example.txt', 'r') as file:
+    content = file.read()
+    print(content)
+# 文件在此处自动关闭，不需要显式调用 `file.close()`
+
+
+### 6. **文件指针操作**
+
+文件指针用于标记文件读取的位置，通常可以通过 `seek()` 和 `tell()` 方法进行操作。
+
+- **`seek(offset, whence)`**：改变文件的当前读取位置（指针位置）。`offset` 是偏移量，`whence` 是参考位置，默认为 `os.SEEK_SET`，表示从文件开头开始计算偏移。
+- **`tell()`**：返回当前文件指针的位置。
+
+
+file = open('example.txt', 'r')
+print(file.tell())  # 输出当前指针位置
+
+file.seek(0, 0)  # 将文件指针移到文件开头
+print(file.tell())  # 输出指针位置，应该为 0
+
+content = file.read()
+print(file.tell())  # 输出指针位置，应该在文件的末尾
+file.close()
+
+
+### 7. **异常处理**
+
+在文件操作中，可能会出现文件未找到、读写错误等异常。你可以使用 `try...except` 语句来捕获这些异常。
+
+
+try:
+    file = open('example.txt', 'r')
+    content = file.read()
+    print(content)
+except FileNotFoundError:
+    print("文件未找到")
+except IOError:
+    print("文件读写错误")
+finally:
+    if file:
+        file.close()  # 确保文件被关闭
+
+
+### 总结
+
+- **打开文件**：使用 `open()` 函数打开文件，指定文件路径和操作模式。
+- **读取文件**：使用 `read()`、`readline()` 或 `readlines()` 读取文件内容。
+- **写入文件**：使用 `write()` 或 `writelines()` 将内容写入文件。
+- **关闭文件**：调用 `close()` 方法关闭文件，防止资源泄漏。
+- **使用 `with` 语句**：简化文件的打开和关闭过程，避免手动管理文件的关闭。
+- **文件指针操作**：通过 `seek()` 和 `tell()` 操作文件指针的位置。
+
+---
+
+### `os` 模块笔记
+
+#### 1. **路径操作（`os.path`）**
+
+- **`os.path.join(path, *paths)`**: 合并路径。
+
+
+  os.path.join('F:/', 'studio', 'code')  # 'F:/studio/code'
+
+
+- **`os.path.exists(path)`**: 检查路径是否存在。
+
+
+  os.path.exists('F:/studio/code')  # True 如果路径存在
+
+
+- **`os.path.isfile(path)`**: 检查路径是否是文件。
+
+
+  os.path.isfile('F:/studio/code/somefile.py')  # True 如果是文件
+
+
+- **`os.path.isdir(path)`**: 检查路径是否是目录。
+
+
+  os.path.isdir('F:/studio/code')  # True 如果是目录
+
+
+- **`os.path.basename(path)`**: 返回路径的最后部分（文件或目录名）。
+
+
+  os.path.basename('F:/studio/code/somefile.py')  # 'somefile.py'
+
+
+- **`os.path.dirname(path)`**: 返回路径的目录部分。
+
+
+  os.path.dirname('F:/studio/code/somefile.py')  # 'F:/studio/code'
+
+
+- **`os.path.split(path)`**: 将路径分割为目录和文件部分，返回一个元组 `(dirname, basename)`。
+
+
+  os.path.split('F:/studio/code/somefile.py')  # ('F:/studio/code', 'somefile.py')
+
+
+- **`os.path.splitext(path)`**: 返回文件路径的扩展名部分。
+
+
+  os.path.splitext('F:/studio/code/somefile.py')  # ('F:/studio/code/somefile', '.py')
+
+
+#### 2. **目录操作（`os` 和 `os.path`）**
+
+- **`os.mkdir(path)`**: 创建一个目录。
+
+
+  os.mkdir('F:/studio/code/new_folder')
+
+
+- **`os.makedirs(path)`**: 递归创建目录。
+
+
+  os.makedirs('F:/studio/code/parent_folder/child_folder')
+
+
+- **`os.rmdir(path)`**: 删除一个空目录。
+
+
+  os.rmdir('F:/studio/code/new_folder')
+
+
+- **`os.removedirs(path)`**: 删除多层目录，只有在目录为空时才能删除。
+
+
+  os.removedirs('F:/studio/code/parent_folder/child_folder')
+
+
+- **`os.listdir(path)`**: 返回指定路径下的文件和目录列表。
+
+
+  os.listdir('F:/studio/code')  # ['file1.py', 'file2.py', 'folder']
+
+
+- **`os.chdir(path)`**: 改变当前工作目录。
+
+
+  os.chdir('F:/studio/code')
+
+
+#### 3. **文件操作**
+
+- **`os.open(path, flags, mode)`**: 打开文件，返回文件描述符。
+
+
+  fd = os.open('F:/studio/code/file.txt', os.O_RDWR | os.O_CREAT, 0o777)
+
+
+- **`os.remove(path)`**: 删除文件。
+
+
+  os.remove('F:/studio/code/file.txt')
+
+
+- **`os.rename(src, dst)`**: 重命名文件或目录。
+
+
+  os.rename('F:/studio/code/old_name.txt', 'F:/studio/code/new_name.txt')
+
+
+#### 4. **获取文件属性**
+
+- **`os.stat(path)`**: 获取文件或目录的状态信息。
+
+
+  os.stat('F:/studio/code/file.txt')
+
+
+- **`os.utime(path, times)`**: 修改文件的访问时间和修改时间。
+
+
+  os.utime('F:/studio/code/file.txt', (time.time(), time.time()))
+
+
+#### 5. **环境变量操作**
+
+- **`os.environ`**: 获取和修改环境变量。
+
+
+  print(os.environ['PATH'])  # 获取环境变量
+  os.environ['MY_VAR'] = 'some_value'  # 设置环境变量
+
+
+- **`os.getenv(name, default=None)`**: 获取环境变量的值。
+
+
+  print(os.getenv('HOME'))  # 获取 HOME 环境变量
+
+
+- **`os.putenv(name, value)`**: 设置环境变量的值。
+
+
+  os.putenv('MY_VAR', 'some_value')
+
+
+#### 6. **进程管理**
+
+- **`os.system(command)`**: 执行系统命令。
+
+
+  os.system('dir')  # 在 Windows 上列出目录
+
+
+- **`os.popen(command)`**: 打开一个管道并执行命令。
+
+
+  result = os.popen('dir').read()
+  print(result)
+
+
+- **`os.getpid()`**: 获取当前进程的 ID。
+
+
+  print(os.getpid())
+
+
+- **`os.getppid()`**: 获取当前进程的父进程 ID。
+
+
+  print(os.getppid())
+
+
+#### 7. **文件描述符操作**
+
+- **`os.dup(fd)`**: 复制一个文件描述符。
+
+
+  fd2 = os.dup(fd)
+
+
+- **`os.close(fd)`**: 关闭文件描述符。
+
+
+  os.close(fd)
+
+
+#### 8. **系统相关操作**
+
+- **`os.name`**: 返回操作系统名称（`posix`, `nt`, `os2`, `ce`, `java`, `riscos`, `atheos`）。
+
+
+  print(os.name)  # 'nt' on Windows, 'posix' on Linux/Mac
+
+
+- **`os.getcwd()`**: 获取当前工作目录。
+
+
+  print(os.getcwd())
+
+
+- **`os.chdir(path)`**: 改变当前工作目录。
+
+
+  os.chdir('F:/studio/code')
+
+
+#### 9. **其他辅助函数**
+
+- **`os.walk(top)`**: 递归遍历目录，返回一个生成器，每次生成一个三元组 `(dirpath, dirnames, filenames)`。
+
+
+  for dirpath, dirnames, filenames in os.walk('F:/studio/code'):
+      print(dirpath, dirnames, filenames)
+
+
+- **`os.remove(path)`**: 删除指定路径的文件。
+
+- **`os.mkdir(path)`**: 创建目录。
+
+- **`os.rmdir(path)`**: 删除目录。
+
+---
+
+### 闭包：从函数工厂的视角
+
+#### 1. **什么是闭包？**
+闭包是一个函数，它“记住”了定义时的外部环境（即外部函数的局部变量），即使外部函数执行完毕。可以将闭包看作是一个**函数工厂**，它返回的函数能够访问外部函数的局部变量。
+
+#### 2. **闭包作为函数工厂**
+闭包是一个函数工厂，它通过返回一个内部函数来定制功能。这个内部函数能够**访问并操作**外部函数的参数或局部变量，从而生成具有特定行为的函数。
+
+#### 3. **闭包作为函数工厂的例子**
+
+
+def multiplier(factor):
+    def multiply_by(n):
+        return n * factor  # 闭包访问外部变量 factor
+    return multiply_by  # 返回闭包函数
+
+times2 = multiplier(2)  # 返回一个乘以 2 的函数
+times3 = multiplier(3)  # 返回一个乘以 3 的函数
+
+print(times2(5))  # 输出 10
+print(times3(5))  # 输出 15
+
+
+- `multiplier` 是工厂，返回定制化的函数 `multiply_by`，并通过闭包“记住”了 `factor` 的值。
+
+
+def counter(start=0):
+    def increment():
+        nonlocal start
+        start += 1
+        return start
+    return increment  # 返回计数器闭包
+
+counter1 = counter(100)  # 从 100 开始
+print(counter1())  # 输出 101
+
+
+- `counter` 是工厂，返回一个计数器函数 `increment`，每次调用时增加 `start`。
+
+#### 4. **闭包的特点**
+- **封装外部变量**：闭包能够封装外部函数的局部变量。
+- **状态持有**：闭包可以保持外部函数的状态，即使外部函数已执行完。
+- **灵活性**：可以根据外部参数动态生成定制化函数。
+
+
+decorator：
+### 装饰器基础
+
+- **装饰器**：是一个函数，接收一个函数并返回一个新的函数，通常用来增强原函数的行为。
+
+#### 基本语法：
+
+
+def decorator(func):
+    def wrapper():
+        print("Before function")
+        func()
+        print("After function")
+    return wrapper
+
+@decorator  # 装饰器语法糖
+def say_hello():
+    print("Hello!")
+
+say_hello()
+
+
+输出：
+
+Before function
+Hello!
+After function
+
+
+- `@decorator` 相当于 `say_hello = decorator(say_hello)`，即用装饰器替代原函数。
+
+#### 带参数的装饰器：
+
+
+def decorator(message):
+    def wrapper(func):
+        def wrapped():
+            print(message)
+            func()
+        return wrapped
+    return wrapper
+
+@decorator("Hello, world!")
+def say_hello():
+    print("Hello!")
+
+say_hello()
+
+
+输出：
+
+Hello, world!
+Hello!
+
+
+#### 多个装饰器：
+
+
+def decorator_1(func):
+    def wrapper():
+        print("Decorator 1")
+        func()
+    return wrapper
+
+def decorator_2(func):
+    def wrapper():
+        print("Decorator 2")
+        func()
+    return wrapper
+
+@decorator_1
+@decorator_2
+def say_hello():
+    print("Hello!")
+
+say_hello()
+
+
+输出：
+
+Decorator 1
+Decorator 2
+Hello!
+
+
+#### 处理参数的装饰器：
+
+
+def decorator(func):
+    def wrapper(*args, **kwargs):
+        print("Before function")
+        return func(*args, **kwargs)
+    return wrapper
+
+@decorator
+def add(a, b):
+    return a + b
+
+print(add(2, 3))
+
+
+输出：
+
+Before function
+5
+
+
+---
+
+### 内置装饰器
+
+- `@staticmethod`：定义静态方法。
+- `@classmethod`：定义类方法。
+- `@property`：将方法转换为只读属性。
+
+
+
+
+
+###############################################################################
+
+
+
+
+
+### 1. 什么是类（Class）？
+
+类（Class）是 Python 中用于创建对象的蓝图或模板。它定义了对象的属性和行为（方法）。我们可以把类看作是一个模板，通过它可以创建多个具有相同属性和方法的对象。
+
+### 2. 创建一个类
+
+定义类使用关键字 `class`，后面接类名（通常首字母大写）。类内部定义的方法和属性。
+
+
+class Dog:
+    pass  # 目前没有内容
+
+
+这个例子定义了一个空的 `Dog` 类。
+
+### 3. 类的构造方法：`__init__`
+
+`__init__` 方法是类的构造函数，当你创建对象时，它会自动被调用。通常在 `__init__` 方法中，我们定义对象的初始状态（属性）。
+
+
+class Dog:
+    def __init__(self, name, age):
+        self.name = name  # 给对象赋予属性
+        self.age = age
+
+# 创建一个对象
+my_dog = Dog("Buddy", 3)
+print(my_dog.name)  # 输出：Buddy
+
+
+- `self` 参数指的是当前对象，所有实例方法都需要带上这个参数，其他参数是你传入的。
+- `self.name` 和 `self.age` 是对象的属性，可以通过对象访问。
+
+### 4. 类的属性和方法
+
+- **属性**：存储数据的变量。
+- **方法**：定义在类中的函数，表示类的行为。
+
+
+class Dog:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+    def bark(self):
+        print(f"{self.name} says woof!")
+
+# 创建对象
+my_dog = Dog("Buddy", 3)
+my_dog.bark()  # 输出：Buddy says woof!
+
+
+`bark` 方法定义了 `Dog` 类的行为，这里它让狗叫。
+
+要为类开启比较，我们需要在类中定义以下方法之一：
+
+__eq__()：判断两个对象是否相等，对应操作符”“。
+__ne__()：判断两个对象是否不相等，对应操作符”!=”。
+__lt__()：判断一个对象是否小于另一个对象，对应操作符”<“。
+__gt__()：判断一个对象是否大于另一个对象，对应操作符”>”。
+__le__()：判断一个对象是否小于或等于另一个对象，对应操作符”<=”。
+__ge__()：判断一个对象是否大于或等于另一个对象，对应操作符”>=”。
+
+### 5. 访问类的属性和方法
+
+通过类的实例对象，可以访问类中的属性和方法。
+
+
+my_dog = Dog("Buddy", 3)
+print(my_dog.name)  # 访问属性
+my_dog.bark()       # 调用方法
+
+
+### 6. 类的继承
+
+继承是面向对象编程的一大特性。它允许一个类从另一个类继承属性和方法，避免重复代码。
+
+
+好的！以下是关于 **继承**（Inheritance）的独立笔记，涵盖了 **基本继承**、**`super()` 函数** 和 **子类重写父类方法** 的核心内容：
+
+---
+
+## 继承
+
+### 1. 基本继承
+
+继承是面向对象编程的重要特性之一，子类可以继承父类的属性和方法，避免了代码的重复，提高了代码复用性。通过继承，子类可以在父类的基础上进行扩展或修改。
+
+**基本语法：**
+
+```python
+class 父类:
+    def __init__(self, ...):
+        # 初始化父类的属性
+
+    def 方法(self):
+        # 父类的方法
+
+class 子类(父类):  # 子类继承父类
+    def __init__(self, ...):
+        super().__init__(...)  # 调用父类的构造方法
+
+    def 方法(self):
+        # 可以重写父类的方法
+```
+
+**示例：**
+
+```python
+class Animal:
+    def __init__(self, name):
+        self.name = name
+
+    def speak(self):
+        print(f"{self.name} makes a sound.")
+
+class Dog(Animal):  # Dog 类继承 Animal 类
+    def speak(self):
+        print(f"{self.name} says woof!")
+
+dog = Dog("Buddy")
+dog.speak()  # 输出：Buddy says woof!
+```
+
+**解释：**
+- `Dog` 类继承了 `Animal` 类，拥有 `name` 属性和 `speak` 方法。
+- `Dog` 类重写了 `speak` 方法，使得每只狗发出的声音是 "woof"。
+
+---
+
+### 2. `super()` 函数：调用父类方法
+
+`super()` 函数用于调用父类的方法，特别是在子类重写父类的构造方法（`__init__`）时，用来确保父类的构造方法被调用，从而初始化父类的属性。
+
+**语法：**
+
+```python
+super().方法名()
+```
+
+**示例：**
+
+```python
+class Animal:
+    def __init__(self, name):
+        self.name = name
+
+class Dog(Animal):
+    def __init__(self, name, breed):
+        super().__init__(name)  # 调用父类的构造方法
+        self.breed = breed
+
+    def speak(self):
+        print(f"{self.name} says woof!")
+
+dog = Dog("Buddy", "Golden Retriever")
+print(dog.name)   # 输出：Buddy
+print(dog.breed)  # 输出：Golden Retriever
+dog.speak()       # 输出：Buddy says woof!
+```
+
+**解释：**
+- `super().__init__(name)` 调用了父类 `Animal` 的构造方法，初始化了父类的 `name` 属性。
+- `Dog` 类添加了一个新的属性 `breed`，并重写了 `speak` 方法。
+
+---
+
+### 3. 子类重写父类方法
+
+子类可以选择重写父类的方法。这意味着子类可以用自己的方式实现父类方法的功能。重写后，子类会使用自己版本的方法，而不再调用父类的版本。
+
+**示例：**
+
+```python
+class Animal:
+    def speak(self):
+        print("Animal makes a sound.")
+
+class Dog(Animal):
+    def speak(self):
+        print("Dog barks!")
+
+dog = Dog()
+dog.speak()  # 输出：Dog barks!
+```
+
+**解释：**
+- `Dog` 类重写了 `speak` 方法，覆盖了父类的实现，使得 `Dog` 类的实例调用 `speak` 方法时，输出的是 "Dog barks!"。
+
+
+
+### 7. 类的实例化
+
+实例化就是通过类来创建一个对象（实例）。
+
+
+my_dog = Dog("Buddy", 3)  # 实例化一个对象
+
+
+### 8. 类的类属性和实例属性
+
+- **实例属性**：每个对象（实例）独有的属性，通过 `self` 访问。
+- **类属性**：所有实例共享的属性，通过类名访问。
+
+
+class Dog:
+    species = "Canis familiaris"  # 类属性
+
+    def __init__(self, name, age):
+        self.name = name  # 实例属性
+        self.age = age
+
+# 创建对象
+dog1 = Dog("Buddy", 3)
+dog2 = Dog("Lucy", 5)
+
+print(dog1.species)  # 输出：Canis familiaris
+print(dog2.species)  # 输出：Canis familiaris
+
+
+### 9. 类方法与静态方法
+
+- **类方法**：使用 `@classmethod` 装饰器定义，方法的第一个参数是 `cls`，表示类本身。
+- **静态方法**：使用 `@staticmethod` 装饰器定义，方法没有默认参数，可以像普通函数一样使用。
+
+
+class Dog:
+    @classmethod
+    def class_method(cls):
+        print("This is a class method.")
+
+    @staticmethod
+    def static_method():
+        print("This is a static method.")
+
+# 调用类方法和静态方法
+Dog.class_method()      # 输出：This is a class method.
+Dog.static_method()     # 输出：This is a static method.
+
+
+
+好的，下面是关于 `defaultdict` 的详细指南，重点关注如何利用类来创建默认值实例：
+
+---
+
+## `defaultdict` 使用指南
+
+`defaultdict` 是 Python `collections` 模块中的一个特殊字典，它与普通字典最大的不同之处在于它允许你为字典的键指定一个默认值工厂。这意味着当访问一个字典中不存在的键时，`defaultdict` 会自动为该键生成一个默认值，而不会抛出 `KeyError` 错误。
+
+### 1. 创建 `defaultdict` 的基本语法
+
+`defaultdict` 的构造函数接受一个参数，这个参数是一个工厂函数（通常是一个类）。这个工厂函数用于生成字典中不存在键的默认值。
+
+```python
+from collections import defaultdict
+
+# 创建一个默认值为 int (0) 的 defaultdict
+d = defaultdict(int)
+
+# 访问不存在的键时，自动生成默认值
+print(d['a'])  # 输出 0
+```
+
+### 2. `defaultdict` 工作原理
+
+当你访问一个不存在的键时，`defaultdict` 会自动调用你传入的工厂函数（类）来生成默认值。例如，`int()` 返回 `0`，`list()` 返回空列表 `[]`，`set()` 返回空集合 `set()`。
+
+#### 例子 1：使用 `int` 作为工厂函数
+```python
+from collections import defaultdict
+
+d = defaultdict(int)
+
+# 访问一个不存在的键，返回默认值 0
+print(d['a'])  # 输出 0
+
+# 更新键的值
+d['a'] += 1
+print(d['a'])  # 输出 1
+```
+
+#### 例子 2：使用 `list` 作为工厂函数
+```python
+from collections import defaultdict
+
+d = defaultdict(list)
+
+# 访问一个不存在的键，返回默认空列表
+d['a'].append(1)
+d['a'].append(2)
+
+print(d['a'])  # 输出 [1, 2]
+```
+
+### 3. 使用类作为默认值工厂
+
+你可以将类作为 `defaultdict` 的工厂函数。这意味着每次访问不存在的键时，`defaultdict` 会自动 **实例化该类**，并将实例作为默认值返回。这是 `defaultdict` 的强大之处，能够方便地为每个键生成一个新的类实例。
+
+#### 例子 3：使用自定义类作为工厂函数
+```python
+from collections import defaultdict
+
+class Dog:
+    def __init__(self, breed="Labrador"):
+        self.breed = breed
+
+# 使用 Dog 类作为默认值工厂
+d = defaultdict(Dog)
+
+# 访问一个不存在的键，自动创建一个 Dog 类的实例
+print(d['a'].breed)  # 输出 "Labrador"
+
+# 访问另一个不存在的键，自动创建另一个 Dog 实例
+print(d['b'].breed)  # 输出 "Labrador"
+```
+
+### 4. 自定义类的默认值行为
+
+当你将类作为 `defaultdict` 的默认工厂时，每次访问一个不存在的键，都会调用该类的构造函数来创建一个新的实例。因此，你可以通过自定义类的构造函数来定制每个实例的默认行为。
+
+#### 例子 4：使用类构造函数设置默认值
+```python
+from collections import defaultdict
+
+class Dog:
+    def __init__(self, breed="Labrador", age=2):
+        self.breed = breed
+        self.age = age
+
+# 使用 Dog 类作为默认值工厂
+d = defaultdict(Dog)
+
+# 访问一个不存在的键，自动创建一个 Dog 类的实例
+dog1 = d['a']
+print(dog1.breed)  # 输出 "Labrador"
+print(dog1.age)    # 输出 2
+
+# 可以通过自定义构造函数中的参数来创建具有不同特征的实例
+d['b'] = Dog('Beagle', 5)
+dog2 = d['b']
+print(dog2.breed)  # 输出 "Beagle"
+print(dog2.age)    # 输出 5
+```
+
+
+
+好的，下面是对 **`calendar`** 和 **`datetime`** 模块的详细总结，重点讲解如何计算时间差。
+
+### 1. **`calendar` 模块**
+`calendar` 模块主要用于日历相关的操作。它可以用来处理特定月份的日历、判断闰年、计算某一天是星期几等，但它并不直接用于计算时间差。
+
+##### 主要功能：
+- **`calendar.month(year, month)`**：打印指定年份和月份的日历。
+- **`calendar.isleap(year)`**：判断某年份是否为闰年。
+- **`calendar.weekday(year, month, day)`**：返回指定日期是星期几（0 是星期一，6 是星期日）。
+- **`calendar.monthcalendar(year, month)`**：返回指定年份和月份的日历矩阵。
+
+**`calendar` 模块本身不提供直接的日期差异计算功能**，而是更多用于获取日历信息或进行日期分析。
+
+---
+
+### 2. **`datetime` 模块**
+
+`datetime` 模块是处理日期和时间的核心库，它不仅支持基本的时间操作（如获取当前时间、转换时间格式等），还提供了 **`timedelta`** 类来进行时间差的计算。这里会着重讲解如何通过 `datetime` 和 `timedelta` 来计算时间差。
+
+#### 2.1 **基本操作**
+- **`datetime` 类**：表示具体的日期和时间。
+- **`date` 类**：表示日期（年、月、日），没有时间部分。
+- **`time` 类**：表示时间（时、分、秒、微秒），没有日期部分。
+- **`timedelta` 类**：表示时间的差异，支持加减操作。
+
+#### 2.2 **计算时间差**
+`datetime` 模块通过 **`timedelta`** 类提供了非常方便的日期差异计算方法。`timedelta` 用来表示时间间隔或时间差。
+
+##### 示例：计算两个日期之间的时间差
+
+```python
+from datetime import datetime
+
+# 定义两个日期对象
+date1 = datetime(2024, 12, 19, 14, 30)
+date2 = datetime(2024, 12, 21, 18, 45)
+
+# 计算时间差
+time_diff = date2 - date1
+
+print(f"时间差: {time_diff}")  # 输出: 时间差: 2 days, 4:15:00
+print(f"时间差（天数）: {time_diff.days}")  # 输出: 时间差（天数）: 2
+print(f"时间差（秒数）: {time_diff.total_seconds()}")  # 输出: 时间差（秒数）: 183300.0
+```
+
+- **`time_diff.days`**：返回两个日期之间的天数差。
+- **`time_diff.total_seconds()`**：返回时间差的总秒数。
+
+##### 计算时间差并输出总秒数
+
+```python
+from datetime import datetime
+
+# 定义两个时间对象
+time1 = datetime(2024, 12, 19, 14, 30)
+time2 = datetime(2024, 12, 19, 18, 45)
+
+# 计算时间差
+time_diff = time2 - time1
+
+# 输出总秒数
+print(f"时间差（秒）: {time_diff.total_seconds()}")  # 输出: 时间差（秒）: 15300.0
+```
+
+##### 计算日期和时间差异的组合
+
+你还可以计算日期和时间差异的组合。例如，计算某一天的特定时间与当前时间之间的差异。
+
+```python
+from datetime import datetime
+
+# 当前时间
+now = datetime.now()
+
+# 某一日期
+specific_date = datetime(2024, 12, 25, 10, 0)  # 2024年12月25日10点
+
+# 计算差异
+time_diff = specific_date - now
+print(f"时间差: {time_diff}")
+```
+
+#### 2.3 **通过 `timedelta` 对象进行时间运算**
+`timedelta` 代表时间差，因此你也可以使用它来进行日期和时间的加减操作。
+
+##### 示例：向日期加上 `timedelta`
+```python
+from datetime import datetime, timedelta
+
+# 当前日期和时间
+now = datetime.now()
+
+# 创建一个表示3天2小时的时间差
+delta = timedelta(days=3, hours=2)
+
+# 当前时间加上3天2小时
+new_time = now + delta
+print(f"新的日期和时间: {new_time}")
+```
+
+##### 示例：向日期减去 `timedelta`
+```python
+from datetime import datetime, timedelta
+
+# 当前日期和时间
+now = datetime.now()
+
+# 创建一个表示5天的时间差
+delta = timedelta(days=5)
+
+# 当前时间减去5天
+new_time = now - delta
+print(f"新的日期和时间: {new_time}")
+```
+
+#### 2.4 **按多个单位计算时间差**
+
+`timedelta` 支持天、秒和微秒为单位进行时间差计算，但对于更复杂的时间计算（如按年、月、日等单位计算），需要使用 **`relativedelta`**（来自 `dateutil` 模块），但在标准库 `datetime` 中无法直接通过 `timedelta` 来进行按年、月等单位的计算。
+
+```python
+from datetime import datetime
+
+# 当前时间
+now = datetime.now()
+
+# 计算1年和2个月后的时间
+new_time = now.replace(year=now.year + 1, month=now.month + 2)  # 这是一个简化的方法，不推荐直接使用
+print(f"新的日期和时间: {new_time}")
+```
+
+这种方法存在局限性，因为它没有考虑不同月份的天数、闰年等问题。如果要进行更精确的按月、年计算，最好使用 `relativedelta`。
+
+#### 2.5 **`timedelta` 对象的属性**
+`timedelta` 对象有以下常用属性，可以帮助你获取时间差的具体信息：
+- **`days`**：返回时间差的天数。
+- **`seconds`**：返回时间差的秒数（去掉天数后的部分）。
+- **`microseconds`**：返回时间差的微秒数。
+- **`total_seconds()`**：返回时间差的总秒数（包括天数部分的秒数）。
+
+#### 总结
+
+- **计算时间差**：
+  - 使用 `timedelta` 来表示时间差，可以通过 `days` 和 `total_seconds()` 获取差异。
+  - 计算两个 `datetime` 对象之间的差异时，直接用 `-` 运算符。
+
+- **时间加减操作**：
+  - 使用 `timedelta` 对象进行日期的加减运算。
+
+- **`datetime`** 主要用于处理具体的日期时间数据，计算差异时适合用 `timedelta` 对象来表示差异。
+
+
+zip 是 Python 内置的一个非常实用的函数，它可以把多个可迭代对象“压缩”在一起，生成一个迭代器，每次迭代返回一个元组，元组里的元素分别来自各个输入的可迭代对象。举个简单的例子：
+
+numbers = [1, 2, 3]
+letters = ['a', 'b', 'c']
+for num, letter in zip(numbers, letters):
+    print(num, letter)
+这段代码会输出：
+
+主要特性
+元素配对： 当你传入多个序列时，zip 会将它们的第一个元素组合成一个元组，接着是第二个元素，依此类推。
+长度不一时： 如果传入的可迭代对象长度不同，zip 会以最短的那个为准，丢弃多余的元素。
+返回迭代器： 在 Python 3 中，zip 返回的是一个迭代器，如果你需要一个列表，可以用 list(zip(...)) 来转换。
+这种特性非常适合在遍历多个序列时使用，让代码更简洁，也能轻松实现类似于并行迭代的效果。
+
+你可以在很多场景下用到 zip，比如在上一个例子中用 zip 把字母和数字配对，从而构造映射字典：
+
+letters = ['S', 'E', 'N', 'D']
+digits = '0123'
+mapping = dict(zip(letters, digits))
+print(mapping)  # 输出：{'S': '0', 'E': '1', 'N': '2', 'D': '3'}
+
+itertools.permutations 是 Python 中 itertools 模块的一个非常有用的函数，它用来生成给定可迭代对象中所有可能的有序排列。简单来说，它会返回一个迭代器，每个元素都是一个排列的元组。
+
+基本用法
+语法：
+itertools.permutations(iterable, r=None)
+iterable：你想排列的对象，比如列表、字符串等。
+r：排列的长度。如果不指定，默认为整个 iterable 的长度。
+示例：
+
+import itertools
+
+# 生成列表 [1, 2, 3] 中所有可能的排列，排列长度默认为3
+for perm in itertools.permutations([1, 2, 3]):
+    print(perm)
+
+# 指定排列长度为2
+for perm in itertools.permutations([1, 2, 3], 2):
+    print(perm)
+第一段代码会输出：
+
+(1, 2, 3)
+(1, 3, 2)
+(2, 1, 3)
+(2, 3, 1)
+(3, 1, 2)
+(3, 2, 1)
+而第二段代码只会生成长度为2的排列，如 (1, 2), (1, 3), (2, 1) 等。
+
+注意事项
+如果指定的排列长度 r 大于可迭代对象的长度，则不会产生任何排列。
+如果可迭代对象中有重复元素，生成的排列中可能会有重复的排列结果。
